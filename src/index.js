@@ -1,3 +1,21 @@
+var dataset = [
+    {
+        day: 'Monday',
+        type: 'dhw',
+        settings: { hourStart: 12, minuteStart: 0, hourEnd: 14, minuteEnd: 0, temp: 10 }
+    },
+    {
+        day: 'Monday',
+        type: 'dhw',
+        settings: { hourStart: 5, minuteStart: 0, hourEnd: 7, minuteEnd: 45, temp: 60 }
+    },
+    {
+        day: 'Tuesday',
+        type: 'dhw',
+        settings: { hourStart: 9, minuteStart: 0, hourEnd: 12, minuteEnd: 0, temp: 32 }
+    }
+]
+
 function timePassedPercente(hour, minute, second){
   var secondsSinceMidnight = second + (minute * 60) + (hour * 3600)
   var totalSecondsInDay = 24 * 60 * 60
@@ -8,6 +26,16 @@ function timePassedPercente(hour, minute, second){
 
 function xAxis(percentage, containerWidth){
     return (containerWidth / 100) * percentage
+}
+
+function filterData(dataset, day){
+    var result = []
+    for(var i = 0; i < dataset.length; i++){
+        if(dataset[i].day === day){
+            result.push(dataset[i])
+        }
+    }
+    return result
 }
 
 function drawTimeIndicatorLinesForRow(row, clientWidth ,lineIndicatorStart){
@@ -29,14 +57,15 @@ function drawTimeIndicatorLinesForRow(row, clientWidth ,lineIndicatorStart){
     } 
 }
 
-function drawRows(numOfRows, rowHeight, clientWidth, lineIndicatorStart){
+function drawRows(rowHeight, clientWidth, lineIndicatorStart){
 
+    var days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     var rectY = 0
     var textY = 25
     var fillColor
     var strokeColor
 
-    for(var i = 0; i < numOfRows; i++){
+    for(var i = 0; i < days.length; i++){
 
         fillColor = i % 2 === 0 ? '#ffffff' : '#dce0e8'
 
@@ -52,13 +81,68 @@ function drawRows(numOfRows, rowHeight, clientWidth, lineIndicatorStart){
             .attr('x', 15)
             .attr('y', textY)
             .attr('font-size', 15)
-            .text('Monday')
+            .text(days[i])
 
         rectY += rowHeight
         textY += rowHeight
 
         drawTimeIndicatorLinesForRow(i, clientWidth, lineIndicatorStart)
+        drawTimeframes(days[i], i)
     }
+}
+
+function drawTimeframes(day, i){
+
+    var data = filterData(dataset, day)
+    
+    var timelineSelection = 'g.' + day + ' rect'
+    var labelSelection = 'g.' + day + ' text'
+
+    svgContainer.selectAll(timelineSelection)
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('x', function(d){
+            var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
+            var x = xAxis(percentageStart, clientWidth - 100) + 100
+            return x
+        })
+        .attr('y', function(){
+            return (i * 40) + 10
+        })
+        .attr('width', function(d){
+            var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
+            var percentageEnd = timePassedPercente(d.settings.hourEnd, d.settings.minuteEnd, 0)
+            var x = xAxis(percentageStart, clientWidth - 100) + 100
+            var width = xAxis(percentageEnd, clientWidth - 100) + 100 - x
+            return width
+        })
+        .attr('height', 20)
+        .attr('fill', function(d){
+            var temp = d.settings.temp
+            if(temp >= 0 && temp < 15) return 'rgba(255, 87, 87, .6)'
+            if(temp >= 15 && temp < 30) return 'rgba(255, 87, 87, .7)'
+            if(temp >= 30 && temp < 50) return 'rgba(255, 87, 87, .8)'
+            if(temp >= 50) return 'rgba(255, 87, 87, 1)'
+        })
+        
+    svgContainer.selectAll(labelSelection)
+        .data(data)
+        .enter()
+        .append('text')
+        .attr('x', function(d){
+            var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
+            var x = xAxis(percentageStart, clientWidth - 100) + 100
+            return x + 5
+        })
+        .attr('y', function(){
+            return (i * 40) + 25
+        })
+        .html(function(d){
+            return d.settings.temp + '&#8451;'
+        })
+        .attr('fill', 'white')
+        .attr('font-size', '13px')
 }
 
 function drawHours(clientWidth, lineIndicatorStart){
@@ -91,6 +175,6 @@ svgContainer.append('line')
     .attr('y2', totalHeight + 1)
     .attr('stroke', '#dce0e8')
     
-drawRows(7, 40, clientWidth, 100)
+drawRows(40, clientWidth, 100)
 drawHours(clientWidth, 100)
 
