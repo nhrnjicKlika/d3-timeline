@@ -13,6 +13,11 @@ var dataset = [
         day: 'Tuesday',
         type: 'dhw',
         settings: { hourStart: 9, minuteStart: 0, hourEnd: 12, minuteEnd: 0, temp: 32 }
+    },
+    {
+        day: 'Sunday',
+        type: 'dhw',
+        settings: { hourStart: 6, minuteStart: 0, hourEnd: 20, minuteEnd: 0, temp: 32 }
     }
 ]
 
