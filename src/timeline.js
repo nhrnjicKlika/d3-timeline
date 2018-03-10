@@ -152,6 +152,10 @@ var timeline = (function(){
             var rowHeight = 40
             var totalHeight = 7 * rowHeight
 
+            if(_svgContainer){
+                _svgContainer.remove('svg')
+            }
+
             _svgContainer = d3.select('#' + elementId).append('svg')
                 .attr('width', _clientWidth)
                 .attr('height', totalHeight + 50)
