@@ -16,7 +16,7 @@ var timeline = (function(){
         return (containerWidth / 100) * percentage
     }
 
-    function filterData(_dataset, day){
+    function filterDataForDay(_dataset, day){
         var result = []
         for(var i = 0; i < _dataset.length; i++){
             if(_dataset[i].day === day){
@@ -78,7 +78,7 @@ var timeline = (function(){
     }
 
     function drawTimeframes(day, i){
-        var data = filterData(_dataset, day)
+        var data = filterDataForDay(_dataset, day)
         
         var timelineSelection = 'g.' + day + ' rect'
         var labelSelection = 'g.' + day + ' text'
