@@ -50,6 +50,8 @@ var timeline = (function(){
         var textY = 25
         var fillColor
         var strokeColor
+        var newRect
+        var newRectStartX
 
         for(var i = 0; i < days.length; i++){
 
@@ -62,6 +64,30 @@ var timeline = (function(){
                 .attr('height', rowHeight)
                 .attr('stroke', '#ffffff')
                 .attr('fill', fillColor)
+                .call(d3.drag()
+                    .on("start", function(){
+                        var y = parseInt(this.getAttribute('y'))
+                        var mouseClickX = d3.event.x
+                        newRectStartX = mouseClickX
+                        newRect = _svgContainer.append('rect')
+                                    .attr('x', mouseClickX)
+                                    .attr('y', y + 10)
+                                    .attr('width', 10)
+                                    .attr('height', 20)
+                                    .attr('fill', 'red')
+                    })
+                    .on("drag", function(){
+                        if(newRect){
+                            var mouseClickX = d3.event.x
+                            var rectX = mouseClickX - newRectStartX
+                            newRect.attr('width', rectX)
+                        }
+                    })
+                    .on("end", function(){
+                        console.log('drag end')
+                    })
+                    
+                )
 
             _svgContainer.append('text')
                 .attr('x', 15)
