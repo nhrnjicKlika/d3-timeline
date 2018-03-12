@@ -3,7 +3,11 @@ var timeline = (function(){
     var _dataset = []
     var _svgContainer = null
     var _clientWidth = 0
+    var _secondsInADay = 24 * 60 * 60
 
+    /*
+        Calculates percentage of day based on time params    
+    */
     function timePassedPercente(hour, minute, second){
         var secondsSinceMidnight = second + (minute * 60) + (hour * 3600)
         var totalSecondsInDay = 24 * 60 * 60
@@ -12,10 +16,32 @@ var timeline = (function(){
         return percentage
     }
 
+    function xPercentageInParent(x){
+        return (x / (_clientWidth - 100)) * 100
+    }
+
+    function getTimeByPercentage(percentage){
+        var seconds = (_secondsInADay / 100) * percentage
+        var hour = Math.floor(seconds / 3600)
+        var minutes = (seconds - (hour * 3600)) / 60
+        return{
+            hour: hour,
+            minute: roundNumber(minutes, 10)
+        }
+    }
+
     function xAxis(percentage, containerWidth){
         return (containerWidth / 100) * percentage
     }
 
+    function roundNumber(num, acc){
+        if( acc < 0 ){
+            return Math.round(num*acc)/acc;
+        }else{
+            return Math.round(num/acc)*acc;
+        }
+    }
+    
     function filterDataForDay(_dataset, day){
         var result = []
         for(var i = 0; i < _dataset.length; i++){
@@ -84,7 +110,12 @@ var timeline = (function(){
                         }
                     })
                     .on("end", function(){
-                        console.log('drag end')
+                        var mouseX = d3.event.x
+                        var percentageXStart = xPercentageInParent(newRectStartX - 100)
+                        var percentageXEnd = xPercentageInParent(mouseX - 100)
+
+                        var startTime = getTimeByPercentage(percentageXStart)
+                        var endTime = getTimeByPercentage(percentageXEnd)
                     })
                     
                 )
