@@ -229,11 +229,11 @@ var timeline = (function(){
         
         var start = div.append('div').attr('class','time-start-div')
 
-        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span> '+ startHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ startMinute +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span id = "start_hour_id"> '+ startHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ startMinute +' </span> <span id = "start_minute_plus_id"> + </span> <span id = "start_minute_minus_id"> - </span> </span>'
         
-        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> '+ endHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ endMinute +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> '+ endHour +' </span> <span id = "end_hour_plus_id"> + </span> <span id = "end_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ endMinute +' </span> <span id = "end_minute_plus_id"> + </span> <span id = "end_minute_minus_id"> - </span> </span>'
 
         startHtml += '<span class = "temp_span"> Set temperature: </span> <input value = "0" />'
 
@@ -245,6 +245,21 @@ var timeline = (function(){
             tooltip.remove()
             newRect.remove()
         }
+
+        var startHourElement = document.getElementById('start_hour_id')
+        var startHourPlus = document.getElementById('start_hour_plus_id')
+        var startHourMinus = document.getElementById('start_hour_minus_id')
+
+        startHourPlus.onclick = function(){
+            startHour += 1
+            startHourElement.innerText = startHour
+        }
+
+        startHourMinus.onclick = function(){
+            startHour -= 1
+            startHourElement.innerText = startHour
+        }
+        
         
     }
 
