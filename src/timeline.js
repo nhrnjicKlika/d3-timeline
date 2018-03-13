@@ -4,7 +4,6 @@ var timeline = (function(){
     var _svgContainer = null
     var _clientWidth = 0
     var _secondsInADay = 24 * 60 * 60
-
     /*
         Calculates percentage of day based on time params    
     */
@@ -111,11 +110,14 @@ var timeline = (function(){
                     })
                     .on("end", function(){
                         var mouseX = d3.event.x
+                        var y = parseInt(this.getAttribute('y'))
                         var percentageXStart = xPercentageInParent(newRectStartX - 100)
                         var percentageXEnd = xPercentageInParent(mouseX - 100)
 
                         var startTime = getTimeByPercentage(percentageXStart)
                         var endTime = getTimeByPercentage(percentageXEnd)
+
+                        createTooltipHtml(newRect ,newRectStartX, y)                   
                     })
                     
                 )
@@ -200,6 +202,38 @@ var timeline = (function(){
 
             textX += hourTextSpan
         }
+    }
+
+    function createTooltipHtml(newRect ,newRectStartX, y){
+        var tooltip = _svgContainer.append('foreignObject')
+                .attr('x', newRectStartX)
+                .attr('y', y + 35)
+                .attr('width', 400)
+                .attr('height', 200)
+        
+        var div = tooltip.append('xhtml:div')
+                    .append('div')
+                    .attr('class', 'tooltip-wrapper')
+        
+        var start = div.append('div').attr('class','time-start-div')
+
+        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        
+        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+
+        startHtml += '<span class = "temp_span"> Set temperature: </span> <input />'
+
+        startHtml += '<button id = "cancel_btn_id"> Cancel </button> <button> Save </button>'
+        start.html(startHtml)
+
+        var cancelButton = document.getElementById('cancel_btn_id')
+        cancelButton.onclick = function(){
+            tooltip.remove()
+            newRect.remove()
+        }
+        
     }
 
     return{
