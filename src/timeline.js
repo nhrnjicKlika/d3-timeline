@@ -116,8 +116,14 @@ var timeline = (function(){
 
                         var startTime = getTimeByPercentage(percentageXStart)
                         var endTime = getTimeByPercentage(percentageXEnd)
+                        var timeframe = {
+                            startHour: startTime.hour,
+                            startMinute: startTime.minute,
+                            endHour: endTime.hour,
+                            endMinute: endTime.minute
+                        }
 
-                        createTooltipHtml(newRect ,newRectStartX, y)                   
+                        createTooltipHtml(newRect, timeframe ,newRectStartX, y)                   
                     })
                     
                 )
@@ -204,7 +210,13 @@ var timeline = (function(){
         }
     }
 
-    function createTooltipHtml(newRect ,newRectStartX, y){
+    function createTooltipHtml(newRect , timeline ,newRectStartX, y){
+
+        var startHour = timeline.startHour
+        var startMinute = timeline.startMinute
+        var endHour = timeline.endHour
+        var endMinute = timeline.endMinute
+
         var tooltip = _svgContainer.append('foreignObject')
                 .attr('x', newRectStartX)
                 .attr('y', y + 35)
@@ -217,13 +229,13 @@ var timeline = (function(){
         
         var start = div.append('div').attr('class','time-start-div')
 
-        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span> '+ startHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ startMinute +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
         
-        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> 12 </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> '+ endHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
+        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ endMinute +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
 
-        startHtml += '<span class = "temp_span"> Set temperature: </span> <input />'
+        startHtml += '<span class = "temp_span"> Set temperature: </span> <input value = "0" />'
 
         startHtml += '<button id = "cancel_btn_id"> Cancel </button> <button> Save </button>'
         start.html(startHtml)
