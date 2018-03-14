@@ -249,6 +249,14 @@ var timeline = (function(){
         var endUp = document.getElementById('end_up_id')
         var endDown = document.getElementById('end_down_id')
 
+        var cancelBtn = document.getElementById('cancel_btn_id')
+        var saveBtn = document.getElementById('save_btn_id')
+
+        cancelBtn.onclick = function(){
+            newRect.remove()
+            tooltip.remove()
+        }
+        
         startUp.onclick = function(){
             var nextTime = getNextTime(startHour, startMinute)
             startHour = nextTime.hour
