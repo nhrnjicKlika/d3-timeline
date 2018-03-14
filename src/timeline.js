@@ -113,10 +113,12 @@ var timeline = (function(){
                         var y = parseInt(this.getAttribute('y'))
                         var percentageXStart = xPercentageInParent(newRectStartX - 100)
                         var percentageXEnd = xPercentageInParent(mouseX - 100)
-
                         var startTime = getTimeByPercentage(percentageXStart)
                         var endTime = getTimeByPercentage(percentageXEnd)
+                        var dayIndex = Math.floor(y / 40)
+
                         var timeframe = {
+                            day: days[dayIndex],
                             startHour: startTime.hour,
                             startMinute: startTime.minute,
                             endHour: endTime.hour,
@@ -256,6 +258,16 @@ var timeline = (function(){
             newRect.remove()
             tooltip.remove()
         }
+
+        saveBtn.onclick = function(){
+            var result = {
+                day: timeline.day,
+                startHour: startHour,
+                startMinute: startMinute,
+                endHour: endHour,
+                endMinute: endMinute
+            }
+        }
         
         startUp.onclick = function(){
             var nextTime = getNextTime(startHour, startMinute)
@@ -282,7 +294,7 @@ var timeline = (function(){
         }
 
         endDown.onclick = function(){
-            var prevTime = getNextTime(endHour, endMinute)
+            var prevTime = getPrevTime(endHour, endMinute)
             endHour = prevTime.hour
             endMinute = prevTime.minute
             endHourElement.innerText = create2DigitNumber(endHour)
