@@ -228,79 +228,20 @@ var timeline = (function(){
                     .attr('class', 'tooltip-wrapper')
         
         var start = div.append('div').attr('class','time-start-div')
-
-        startHtml = '<span> Set time: </span> <span id = "start_hour_id"> '+ startHour +' </span> <img src = "src/logo/plus.png" id = "start_hour_plus_id" /> <img src = "src/logo/minus.png" id = "start_hour_minus_id" />'
-        startHtml += '<span> : </span> <span id = "start_minute_id"> '+ startMinute +' </span> <img src = "src/logo/plus.png" id = "start_minute_plus_id" /> <img src = "src/logo/minus.png" id = "start_minute_minus_id" />'
+        var htmlContent = '<span> Start: </span> <span id = "start_hour_id"> '+create2DigitNumber(startHour)+' </span> : <span> '+create2DigitNumber(startMinute)+' </span>'
+        htmlContent += '<img id = "start_up_id" src = "src/logo/plus.png" /> <img id = "start_down_id" src = "src/logo/minus.png" />'
+        htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span> '+create2DigitNumber(endMinute)+' </span>'
+        htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
         
-        startHtml += '<span> - </span> <span id = "end_hour_id"> '+ endHour +' </span>  <img src = "src/logo/plus.png" id = "end_hour_plus_id" /> <img src = "src/logo/minus.png" id = "end_hour_minus_id" />'
-        startHtml += '<span> : </span> <span id = "end_minute_id"> '+ endMinute +' </span> <img src = "src/logo/plus.png" id = "end_minute_plus_id" /> <img src = "src/logo/minus.png" id = "end_minute_minus_id" />'
+        start.html(htmlContent)
+    }
 
-        //startHtml += '<span class = "temp_span"> Set temperature: </span> <input value = "0" />'
-
-        //startHtml += '<button id = "cancel_btn_id"> Cancel </button> <button> Save </button>'
-        start.html(startHtml)
-
-        // var cancelButton = document.getElementById('cancel_btn_id')
-        // cancelButton.onclick = function(){
-        //     tooltip.remove()
-        //     newRect.remove()
-        // }
-
-        var startHourElement = document.getElementById('start_hour_id')
-        var startMinuteElement = document.getElementById('start_minute_id')
-        var endHourElement = document.getElementById('end_hour_id')
-        var endMinuteElement = document.getElementById('end_minute_id')
-
-        var startHourPlus = document.getElementById('start_hour_plus_id')
-        var startHourMinus = document.getElementById('start_hour_minus_id')
-        var startMinutePlus = document.getElementById('start_minute_plus_id')
-        var startMinuteMinus = document.getElementById('start_minute_minus_id')
-
-        var endHourPlus = document.getElementById('end_hour_plus_id')
-        var endHourMinus = document.getElementById('end_hour_minus_id')
-        var endMinutePlus = document.getElementById('end_minute_plus_id')
-        var endMinuteMinus = document.getElementById('end_minute_minus_id')
-
-        startHourPlus.onclick = function(){
-            startHour += 1
-            startHourElement.innerText = startHour
+    function create2DigitNumber(number){
+        if(number >= 0 && number < 10){
+            return '0' + number
+        }else{
+            return number
         }
-
-        startHourMinus.onclick = function(){
-            startHour -= 1
-            startHourElement.innerText = startHour
-        }
-        
-        startMinutePlus.onclick = function(){
-            startMinute += 10
-            startMinuteElement.innerText = startMinute
-        }
-
-        startMinuteMinus.onclick = function(){
-            startMinute -= 10
-            startMinuteElement.innerText = startMinute
-        }
-
-        endHourPlus.onclick = function(){
-            endHour += 1
-            endHourElement.innerText = endHour
-        }
-
-        endHourMinus.onclick = function(){
-            endHour -= 1
-            endHourElement.innerText = endHour
-        }
-        
-        endMinutePlus.onclick = function(){
-            endMinute += 10
-            endMinuteElement.innerText = endMinute
-        }
-
-        endMinuteMinus.onclick = function(){
-            endMinute -= 10
-            endMinuteElement.innerText = endMinute
-        }
-        
     }
 
     return{
