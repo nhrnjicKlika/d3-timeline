@@ -232,6 +232,10 @@ var timeline = (function(){
         htmlContent += '<img id = "start_up_id" src = "src/logo/plus.png" /> <img id = "start_down_id" src = "src/logo/minus.png" />'
         htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span id = "end_minute_id"> '+create2DigitNumber(endMinute)+' </span>'
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
+        htmlContent += '<span class = "temp_id"> Temperature </span> <input value = "0" />'
+        htmlContent += '<div class = "actions-wrapper">'
+        htmlContent += '<button id = "cancel_btn_id"> Cancel </button> <button id = "save_btn_id"> Save </button>'
+        htmlContent += '</div>'
         
         start.html(htmlContent)
 
