@@ -229,26 +229,37 @@ var timeline = (function(){
         
         var start = div.append('div').attr('class','time-start-div')
 
-        startHtml = '<span> Set time: </span> <span class = "input-wrapper"> <span id = "start_hour_id"> '+ startHour +' </span> <span id = "start_hour_plus_id"> + </span> <span id = "start_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ startMinute +' </span> <span id = "start_minute_plus_id"> + </span> <span id = "start_minute_minus_id"> - </span> </span>'
+        startHtml = '<span> Set time: </span> <span id = "start_hour_id"> '+ startHour +' </span> <img src = "src/logo/plus.png" id = "start_hour_plus_id" /> <img src = "src/logo/minus.png" id = "start_hour_minus_id" />'
+        startHtml += '<span> : </span> <span id = "start_minute_id"> '+ startMinute +' </span> <img src = "src/logo/plus.png" id = "start_minute_plus_id" /> <img src = "src/logo/minus.png" id = "start_minute_minus_id" />'
         
-        startHtml += '<span> - </span> <span class = "input-wrapper"> <span> '+ endHour +' </span> <span id = "end_hour_plus_id"> + </span> <span id = "end_hour_minus_id"> - </span> </span>'
-        startHtml += '<span> : </span> <span class = "input-wrapper"> <span> '+ endMinute +' </span> <span id = "end_minute_plus_id"> + </span> <span id = "end_minute_minus_id"> - </span> </span>'
+        startHtml += '<span> - </span> <span id = "end_hour_id"> '+ endHour +' </span>  <img src = "src/logo/plus.png" id = "end_hour_plus_id" /> <img src = "src/logo/minus.png" id = "end_hour_minus_id" />'
+        startHtml += '<span> : </span> <span id = "end_minute_id"> '+ endMinute +' </span> <img src = "src/logo/plus.png" id = "end_minute_plus_id" /> <img src = "src/logo/minus.png" id = "end_minute_minus_id" />'
 
-        startHtml += '<span class = "temp_span"> Set temperature: </span> <input value = "0" />'
+        //startHtml += '<span class = "temp_span"> Set temperature: </span> <input value = "0" />'
 
-        startHtml += '<button id = "cancel_btn_id"> Cancel </button> <button> Save </button>'
+        //startHtml += '<button id = "cancel_btn_id"> Cancel </button> <button> Save </button>'
         start.html(startHtml)
 
-        var cancelButton = document.getElementById('cancel_btn_id')
-        cancelButton.onclick = function(){
-            tooltip.remove()
-            newRect.remove()
-        }
+        // var cancelButton = document.getElementById('cancel_btn_id')
+        // cancelButton.onclick = function(){
+        //     tooltip.remove()
+        //     newRect.remove()
+        // }
 
         var startHourElement = document.getElementById('start_hour_id')
+        var startMinuteElement = document.getElementById('start_minute_id')
+        var endHourElement = document.getElementById('end_hour_id')
+        var endMinuteElement = document.getElementById('end_minute_id')
+
         var startHourPlus = document.getElementById('start_hour_plus_id')
         var startHourMinus = document.getElementById('start_hour_minus_id')
+        var startMinutePlus = document.getElementById('start_minute_plus_id')
+        var startMinuteMinus = document.getElementById('start_minute_minus_id')
+
+        var endHourPlus = document.getElementById('end_hour_plus_id')
+        var endHourMinus = document.getElementById('end_hour_minus_id')
+        var endMinutePlus = document.getElementById('end_minute_plus_id')
+        var endMinuteMinus = document.getElementById('end_minute_minus_id')
 
         startHourPlus.onclick = function(){
             startHour += 1
@@ -260,6 +271,35 @@ var timeline = (function(){
             startHourElement.innerText = startHour
         }
         
+        startMinutePlus.onclick = function(){
+            startMinute += 10
+            startMinuteElement.innerText = startMinute
+        }
+
+        startMinuteMinus.onclick = function(){
+            startMinute -= 10
+            startMinuteElement.innerText = startMinute
+        }
+
+        endHourPlus.onclick = function(){
+            endHour += 1
+            endHourElement.innerText = endHour
+        }
+
+        endHourMinus.onclick = function(){
+            endHour -= 1
+            endHourElement.innerText = endHour
+        }
+        
+        endMinutePlus.onclick = function(){
+            endMinute += 10
+            endMinuteElement.innerText = endMinute
+        }
+
+        endMinuteMinus.onclick = function(){
+            endMinute -= 10
+            endMinuteElement.innerText = endMinute
+        }
         
     }
 
