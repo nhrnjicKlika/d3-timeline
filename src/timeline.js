@@ -228,12 +228,54 @@ var timeline = (function(){
                     .attr('class', 'tooltip-wrapper')
         
         var start = div.append('div').attr('class','time-start-div')
-        var htmlContent = '<span> Start: </span> <span id = "start_hour_id"> '+create2DigitNumber(startHour)+' </span> : <span> '+create2DigitNumber(startMinute)+' </span>'
+        var htmlContent = '<span> Start: </span> <span id = "start_hour_id"> '+create2DigitNumber(startHour)+' </span> : <span id = "start_minute_id"> '+create2DigitNumber(startMinute)+' </span>'
         htmlContent += '<img id = "start_up_id" src = "src/logo/plus.png" /> <img id = "start_down_id" src = "src/logo/minus.png" />'
-        htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span> '+create2DigitNumber(endMinute)+' </span>'
+        htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span id = "end_minute_id"> '+create2DigitNumber(endMinute)+' </span>'
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
         
         start.html(htmlContent)
+
+        var startHourElement = document.getElementById('start_hour_id')
+        var startMinuteElement = document.getElementById('start_minute_id')
+        var endHourElement = document.getElementById('end_hour_id')
+        var endMinuteElement = document.getElementById('end_minute_id')
+
+        var startUp = document.getElementById('start_up_id')
+        var startDown = document.getElementById('start_down_id')
+        var endUp = document.getElementById('end_up_id')
+        var endDown = document.getElementById('end_down_id')
+
+        startUp.onclick = function(){
+            var nextTime = getNextTime(startHour, startMinute)
+            startHour = nextTime.hour
+            startMinute = nextTime.minute
+            startHourElement.innerText = create2DigitNumber(startHour)
+            startMinuteElement.innerText = create2DigitNumber(startMinute)
+        }
+
+        startDown.onclick = function(){
+            var prevTime = getPrevTime(startHour, startMinute)
+            startHour = prevTime.hour
+            startMinute = prevTime.minute
+            startHourElement.innerText = create2DigitNumber(startHour)
+            startMinuteElement.innerText = create2DigitNumber(startMinute)
+        }
+
+        endUp.onclick = function(){
+            var nextTime = getNextTime(endHour, endMinute)
+            endHour = nextTime.hour
+            endMinute = nextTime.minute
+            endHourElement.innerText = create2DigitNumber(endHour)
+            endMinuteElement.innerText = create2DigitNumber(endMinute)
+        }
+
+        endDown.onclick = function(){
+            var prevTime = getNextTime(endHour, endMinute)
+            endHour = prevTime.hour
+            endMinute = prevTime.minute
+            endHourElement.innerText = create2DigitNumber(endHour)
+            endMinuteElement.innerText = create2DigitNumber(endMinute)
+        }
     }
 
     function create2DigitNumber(number){
@@ -242,6 +284,38 @@ var timeline = (function(){
         }else{
             return number
         }
+    }
+
+    function getNextTime(hour, minute){
+        if((minute + 10) >= 60){
+            minute = 0
+
+            if((hour + 1) >= 24){
+                hour = 0
+            }else{
+                hour += 1
+            }
+        }else{
+            minute += 10
+        }
+
+        return{ hour: hour, minute: minute }
+    }
+
+    function getPrevTime(hour, minute){
+        if((minute - 10) < 0){
+            minute = 50
+
+            if((hour - 1) < 0){
+                hour = 23
+            }else{
+                hour -= 1
+            }
+        }else{
+            minute -= 10
+        }
+
+        return{ hour: hour, minute: minute }
     }
 
     return{
