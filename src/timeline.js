@@ -387,7 +387,7 @@ var timeline = (function(){
 
             _svgContainer = d3.select('#' + elementId).append('svg')
                 .attr('width', _clientWidth)
-                .attr('height', totalHeight + 50)
+                .attr('height', totalHeight + 150)
 
             _svgContainer.append('line')
                 .attr('x1', 0)
