@@ -172,10 +172,7 @@ var timeline = (function(){
             .attr('height', 20)
             .attr('fill', function(d){
                 var temp = d.settings.temp
-                if(temp >= 0 && temp < 15) return 'rgba(81, 219, 101, .6)'
-                if(temp >= 15 && temp < 30) return 'rgba(81, 219, 101, .7)'
-                if(temp >= 30 && temp < 50) return 'rgba(81, 219, 101, .8)'
-                if(temp >= 50) return 'rgba(81, 219, 101, 1)'
+                return getRectColor(temp)
             })
             
         _svgContainer.selectAll(labelSelection)
@@ -210,6 +207,13 @@ var timeline = (function(){
 
             textX += hourTextSpan
         }
+    }
+
+    function getRectColor(temp){
+        if(temp >= 0 && temp < 15) return 'rgba(81, 219, 101, .6)'
+        if(temp >= 15 && temp < 30) return 'rgba(81, 219, 101, .7)'
+        if(temp >= 30 && temp < 50) return 'rgba(81, 219, 101, .8)'
+        if(temp >= 50) return 'rgba(81, 219, 101, 1)'
     }
 
     function createTooltipHtml(newRect , timeline ,newRectStartX, y){
@@ -275,6 +279,7 @@ var timeline = (function(){
             var percentageEnd = timePassedPercente(result.endHour, result.endMinute, 0)
             var newRectEndX = xAxis(percentageEnd, _clientWidth - 100) + 100
             newRect.attr('x', newRectStartX).attr('width', newRectEndX - newRectStartX)
+            newRect.attr('fill', getRectColor(result.temperature))
             tooltip.remove()
 
             var labelY = parseInt(newRect.attr('y'))
