@@ -267,6 +267,13 @@ var timeline = (function(){
                 endHour: endHour,
                 endMinute: endMinute
             }
+
+            var percentageStart = timePassedPercente(result.startHour, result.startMinute, 0)
+            newRectStartX = xAxis(percentageStart, _clientWidth - 100) + 100
+            var percentageEnd = timePassedPercente(result.endHour, result.endMinute, 0)
+            var newRectEndX = xAxis(percentageEnd, _clientWidth - 100) + 100
+            newRect.attr('x', newRectStartX).attr('width', newRectEndX - newRectStartX)
+            tooltip.remove()
         }
         
         startUp.onclick = function(){
