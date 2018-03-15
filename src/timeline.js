@@ -4,6 +4,7 @@ var timeline = (function(){
     var _svgContainer = null
     var _clientWidth = 0
     var _secondsInADay = 24 * 60 * 60
+    var dragOn = true
     /*
         Calculates percentage of day based on time params    
     */
@@ -91,41 +92,48 @@ var timeline = (function(){
                 .attr('fill', fillColor)
                 .call(d3.drag()
                     .on("start", function(){
-                        var y = parseInt(this.getAttribute('y'))
-                        var mouseClickX = d3.event.x
-                        newRectStartX = mouseClickX
-                        newRect = _svgContainer.append('rect')
-                                    .attr('x', mouseClickX)
-                                    .attr('y', y + 10)
-                                    .attr('width', 10)
-                                    .attr('height', 20)
-                                    .attr('fill', 'rgb(81, 219, 101)')
+                        if(dragOn){ 
+                            var y = parseInt(this.getAttribute('y'))
+                            var mouseClickX = d3.event.x
+                            newRectStartX = mouseClickX
+                            newRect = _svgContainer.append('rect')
+                                        .attr('x', mouseClickX)
+                                        .attr('y', y + 10)
+                                        .attr('width', 10)
+                                        .attr('height', 20)
+                                        .attr('fill', 'rgb(81, 219, 101)')
+                        }
                     })
                     .on("drag", function(){
-                        if(newRect){
-                            var mouseClickX = d3.event.x
-                            var rectX = mouseClickX - newRectStartX
-                            newRect.attr('width', rectX)
+                        if(dragOn){ 
+                            if(newRect){
+                                var mouseClickX = d3.event.x
+                                var rectX = mouseClickX - newRectStartX
+                                newRect.attr('width', rectX)
+                            }
                         }
                     })
                     .on("end", function(){
-                        var mouseX = d3.event.x
-                        var y = parseInt(this.getAttribute('y'))
-                        var percentageXStart = xPercentageInParent(newRectStartX - 100)
-                        var percentageXEnd = xPercentageInParent(mouseX - 100)
-                        var startTime = getTimeByPercentage(percentageXStart)
-                        var endTime = getTimeByPercentage(percentageXEnd)
-                        var dayIndex = Math.floor(y / 40)
+                        if(dragOn){ 
+                            dragOn = false
+                            var mouseX = d3.event.x
+                            var y = parseInt(this.getAttribute('y'))
+                            var percentageXStart = xPercentageInParent(newRectStartX - 100)
+                            var percentageXEnd = xPercentageInParent(mouseX - 100)
+                            var startTime = getTimeByPercentage(percentageXStart)
+                            var endTime = getTimeByPercentage(percentageXEnd)
+                            var dayIndex = Math.floor(y / 40)
 
-                        var timeframe = {
-                            day: days[dayIndex],
-                            startHour: startTime.hour,
-                            startMinute: startTime.minute,
-                            endHour: endTime.hour,
-                            endMinute: endTime.minute
-                        }
+                            var timeframe = {
+                                day: days[dayIndex],
+                                startHour: startTime.hour,
+                                startMinute: startTime.minute,
+                                endHour: endTime.hour,
+                                endMinute: endTime.minute
+                            }
 
-                        createTooltipHtml(newRect, timeframe ,newRectStartX, y)                   
+                            createTooltipHtml(newRect, timeframe ,newRectStartX, y)
+                        }             
                     })
                     
                 )
@@ -260,11 +268,13 @@ var timeline = (function(){
         var saveBtn = document.getElementById('save_btn_id')
 
         cancelBtn.onclick = function(){
+            dragOn = true
             newRect.remove()
             tooltip.remove()
         }
 
         saveBtn.onclick = function(){
+            dragOn = true
             var result = {
                 day: timeline.day,
                 startHour: startHour,
