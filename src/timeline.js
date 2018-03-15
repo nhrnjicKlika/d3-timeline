@@ -99,7 +99,7 @@ var timeline = (function(){
                                     .attr('y', y + 10)
                                     .attr('width', 10)
                                     .attr('height', 20)
-                                    .attr('fill', 'red')
+                                    .attr('fill', 'rgb(81, 219, 101)')
                     })
                     .on("drag", function(){
                         if(newRect){
@@ -172,10 +172,10 @@ var timeline = (function(){
             .attr('height', 20)
             .attr('fill', function(d){
                 var temp = d.settings.temp
-                if(temp >= 0 && temp < 15) return 'rgba(255, 87, 87, .6)'
-                if(temp >= 15 && temp < 30) return 'rgba(255, 87, 87, .7)'
-                if(temp >= 30 && temp < 50) return 'rgba(255, 87, 87, .8)'
-                if(temp >= 50) return 'rgba(255, 87, 87, 1)'
+                if(temp >= 0 && temp < 15) return 'rgba(81, 219, 101, .6)'
+                if(temp >= 15 && temp < 30) return 'rgba(81, 219, 101, .7)'
+                if(temp >= 30 && temp < 50) return 'rgba(81, 219, 101, .8)'
+                if(temp >= 50) return 'rgba(81, 219, 101, 1)'
             })
             
         _svgContainer.selectAll(labelSelection)
@@ -234,7 +234,7 @@ var timeline = (function(){
         htmlContent += '<img id = "start_up_id" src = "src/logo/plus.png" /> <img id = "start_down_id" src = "src/logo/minus.png" />'
         htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span id = "end_minute_id"> '+create2DigitNumber(endMinute)+' </span>'
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
-        htmlContent += '<span class = "temp_id"> Temperature </span> <input value = "0" />'
+        htmlContent += '<span class = "temp_id"> Temperature </span> <input id = "temp_input_id" value = "0" />'
         htmlContent += '<div class = "actions-wrapper">'
         htmlContent += '<button id = "cancel_btn_id"> Cancel </button> <button id = "save_btn_id"> Save </button>'
         htmlContent += '</div>'
@@ -245,6 +245,7 @@ var timeline = (function(){
         var startMinuteElement = document.getElementById('start_minute_id')
         var endHourElement = document.getElementById('end_hour_id')
         var endMinuteElement = document.getElementById('end_minute_id')
+        var temperatureInput = document.getElementById('temp_input_id')
 
         var startUp = document.getElementById('start_up_id')
         var startDown = document.getElementById('start_down_id')
@@ -265,7 +266,8 @@ var timeline = (function(){
                 startHour: startHour,
                 startMinute: startMinute,
                 endHour: endHour,
-                endMinute: endMinute
+                endMinute: endMinute,
+                temperature: parseInt(temperatureInput.value)
             }
 
             var percentageStart = timePassedPercente(result.startHour, result.startMinute, 0)
@@ -274,6 +276,14 @@ var timeline = (function(){
             var newRectEndX = xAxis(percentageEnd, _clientWidth - 100) + 100
             newRect.attr('x', newRectStartX).attr('width', newRectEndX - newRectStartX)
             tooltip.remove()
+
+            var labelY = parseInt(newRect.attr('y'))
+
+            _svgContainer.append('text')
+                .attr('x', newRectStartX + 5)
+                .attr('y', labelY + 15)
+                .attr('fill', 'white')
+                .text(result.temperature)
         }
         
         startUp.onclick = function(){
