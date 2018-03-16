@@ -149,7 +149,6 @@ var timeline = (function(){
                                 newRect.attr('fill', getRectColor(result.temp))
 
                                 var labelY = parseInt(newRect.attr('y'))
-
                                 _svgContainer.append('text')
                                     .attr('x', xStart + 5)
                                     .attr('y', labelY + 15)
@@ -216,7 +215,7 @@ var timeline = (function(){
                     rectForEdit.attr('x', xStart).attr('width', xEnd - xStart)
                     rectForEdit.attr('fill', getRectColor(result.temp))
         
-                    // var labelY = parseInt(newRect.attr('y'))
+                    // var labelY = parseInt(rectForEdit.attr('y'))
 
                     // _svgContainer.append('text')
                     //     .attr('x', xStart + 5)
