@@ -126,13 +126,20 @@ var timeline = (function(){
 
                             var timeframe = {
                                 day: days[dayIndex],
-                                startHour: startTime.hour,
-                                startMinute: startTime.minute,
-                                endHour: endTime.hour,
-                                endMinute: endTime.minute
+                                hourStart: startTime.hour,
+                                minuteStart: startTime.minute,
+                                hourEnd: endTime.hour,
+                                minuteEnd: endTime.minute
                             }
 
-                            createTooltipHtml(newRect, timeframe ,newRectStartX, y)
+                            var options = {
+                                newRect,
+                                timeline: timeframe,
+                                newRectStartX,
+                                y
+                            }
+
+                            createTooltipHtml(options)
                         }             
                     })
                     
@@ -177,7 +184,14 @@ var timeline = (function(){
                 return getRectColor(temp)
             })
             .on('click', function(d, i){
-                createTooltipHtml(this, d.settings, d.xStart, (i * 40) + 10)
+                var options = {
+                    newRect: this,
+                    timeline: d.settings,
+                    newRectStartX: d.xStart,
+                    y: (i * 40) + 10
+                }
+
+                createTooltipHtml(options)
             })
             
         _svgContainer.selectAll(labelSelection)
@@ -221,7 +235,9 @@ var timeline = (function(){
         if(temp >= 50) return 'rgba(81, 219, 101, 1)'
     }
 
-    function createTooltipHtml(newRect , timeline ,newRectStartX, y){
+    function createTooltipHtml(options){
+
+        var { newRect, timeline, newRectStartX, y } = options
 
         var startHour = timeline.hourStart
         var startMinute = timeline.minuteStart
