@@ -176,6 +176,9 @@ var timeline = (function(){
                 var temp = d.settings.temp
                 return getRectColor(temp)
             })
+            .on('click', function(d, i){
+                createTooltipHtml(this, d.settings, d.xStart, (i * 40) + 10)
+            })
             
         _svgContainer.selectAll(labelSelection)
             .data(data)
@@ -220,10 +223,10 @@ var timeline = (function(){
 
     function createTooltipHtml(newRect , timeline ,newRectStartX, y){
 
-        var startHour = timeline.startHour
-        var startMinute = timeline.startMinute
-        var endHour = timeline.endHour
-        var endMinute = timeline.endMinute
+        var startHour = timeline.hourStart
+        var startMinute = timeline.minuteStart
+        var endHour = timeline.hourEnd
+        var endMinute = timeline.minuteEnd
 
         var tooltip = _svgContainer.append('foreignObject')
                 .attr('x', newRectStartX)
