@@ -129,7 +129,8 @@ var timeline = (function(){
                                 hourStart: startTime.hour,
                                 minuteStart: startTime.minute,
                                 hourEnd: endTime.hour,
-                                minuteEnd: endTime.minute
+                                minuteEnd: endTime.minute,
+                                temp: 0
                             }
 
                             var options = {
@@ -139,7 +140,22 @@ var timeline = (function(){
                                 y
                             }
 
-                            createTooltipHtml(options)
+                            createTooltipHtml(options, (result) => {
+                                var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                                var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                                var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                                var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                                newRect.attr('x', xStart).attr('width', xEnd - xStart)
+                                newRect.attr('fill', getRectColor(result.temp))
+
+                                var labelY = parseInt(newRect.attr('y'))
+
+                                _svgContainer.append('text')
+                                    .attr('x', xStart + 5)
+                                    .attr('y', labelY + 15)
+                                    .attr('fill', 'white')
+                                    .text(result.temp)
+                            })
                         }             
                     })
                     
@@ -191,7 +207,23 @@ var timeline = (function(){
                     y: (i * 40) + 10
                 }
 
-                createTooltipHtml(options)
+                createTooltipHtml(options, (result) => {
+                    var rectForEdit = d3.select(this)
+                    var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                    var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                    var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                    var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                    rectForEdit.attr('x', xStart).attr('width', xEnd - xStart)
+                    rectForEdit.attr('fill', getRectColor(result.temp))
+        
+                    // var labelY = parseInt(newRect.attr('y'))
+
+                    // _svgContainer.append('text')
+                    //     .attr('x', xStart + 5)
+                    //     .attr('y', labelY + 15)
+                    //     .attr('fill', 'white')
+                    //     .text(result.temp)
+                })
             })
             
         _svgContainer.selectAll(labelSelection)
@@ -235,7 +267,7 @@ var timeline = (function(){
         if(temp >= 50) return 'rgba(81, 219, 101, 1)'
     }
 
-    function createTooltipHtml(options){
+    function createTooltipHtml(options, onFinish){
 
         var { newRect, timeline, newRectStartX, y } = options
 
@@ -243,6 +275,7 @@ var timeline = (function(){
         var startMinute = timeline.minuteStart
         var endHour = timeline.hourEnd
         var endMinute = timeline.minuteEnd
+        var temp = timeline.temp
 
         var tooltip = _svgContainer.append('foreignObject')
                 .attr('x', newRectStartX)
@@ -259,7 +292,7 @@ var timeline = (function(){
         htmlContent += '<img id = "start_up_id" src = "src/logo/plus.png" /> <img id = "start_down_id" src = "src/logo/minus.png" />'
         htmlContent += '<span class = "end-time-label"> End: </span> <span id = "end_hour_id"> '+create2DigitNumber(endHour)+' </span> : <span id = "end_minute_id"> '+create2DigitNumber(endMinute)+' </span>'
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
-        htmlContent += '<span class = "temp_id"> Temperature </span> <input id = "temp_input_id" value = "0" />'
+        htmlContent += '<span class = "temp_id"> Temperature </span> <input id = "temp_input_id" value = "'+ create2DigitNumber(temp) +'" />'
         htmlContent += '<div class = "actions-wrapper">'
         htmlContent += '<button id = "cancel_btn_id"> Cancel </button> <button id = "save_btn_id"> Save </button>'
         htmlContent += '</div>'
@@ -282,36 +315,23 @@ var timeline = (function(){
 
         cancelBtn.onclick = function(){
             dragOn = true
-            newRect.remove()
             tooltip.remove()
+            onFinish(null)
         }
 
         saveBtn.onclick = function(){
             dragOn = true
             var result = {
                 day: timeline.day,
-                startHour: startHour,
-                startMinute: startMinute,
-                endHour: endHour,
-                endMinute: endMinute,
-                temperature: parseInt(temperatureInput.value)
+                hourStart: startHour,
+                minuteStart: startMinute,
+                hourEnd: endHour,
+                minuteEnd: endMinute,
+                temp: parseInt(temperatureInput.value)
             }
 
-            var percentageStart = timePassedPercente(result.startHour, result.startMinute, 0)
-            newRectStartX = xAxis(percentageStart, _clientWidth - 100) + 100
-            var percentageEnd = timePassedPercente(result.endHour, result.endMinute, 0)
-            var newRectEndX = xAxis(percentageEnd, _clientWidth - 100) + 100
-            newRect.attr('x', newRectStartX).attr('width', newRectEndX - newRectStartX)
-            newRect.attr('fill', getRectColor(result.temperature))
             tooltip.remove()
-
-            var labelY = parseInt(newRect.attr('y'))
-
-            _svgContainer.append('text')
-                .attr('x', newRectStartX + 5)
-                .attr('y', labelY + 15)
-                .attr('fill', 'white')
-                .text(result.temperature)
+            onFinish(result)
         }
         
         startUp.onclick = function(){
