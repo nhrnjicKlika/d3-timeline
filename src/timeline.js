@@ -163,19 +163,13 @@ var timeline = (function(){
             .enter()
             .append('rect')
             .attr('x', function(d){
-                var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
-                var x = xAxis(percentageStart, _clientWidth - 100) + 100
-                return x
+                return d.xStart
             })
             .attr('y', function(){
                 return (i * 40) + 10
             })
             .attr('width', function(d){
-                var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
-                var percentageEnd = timePassedPercente(d.settings.hourEnd, d.settings.minuteEnd, 0)
-                var x = xAxis(percentageStart, _clientWidth - 100) + 100
-                var width = xAxis(percentageEnd, _clientWidth - 100) + 100 - x
-                return width
+                return d.xEnd - d.xStart
             })
             .attr('height', 20)
             .attr('fill', function(d){
@@ -374,10 +368,25 @@ var timeline = (function(){
         return{ hour: hour, minute: minute }
     }
 
+    function addCordinatesToDataset(dataset){
+
+        var newDataset = []
+
+        for(var i = 0; i < dataset.length; i++){
+            var d = dataset[i]
+            var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
+            var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+            var percentageEnd = timePassedPercente(d.settings.hourEnd, d.settings.minuteEnd, 0)
+            var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+            newDataset = [...newDataset ,{ ...d, xStart, xEnd }]
+        }
+        return newDataset
+    }
+
     return{
         create: function(elementId ,dataset){
-            _dataset = dataset
             _clientWidth = document.getElementById(elementId).clientWidth
+            _dataset = addCordinatesToDataset(dataset) 
             var rowHeight = 40
             var totalHeight = 7 * rowHeight
 
