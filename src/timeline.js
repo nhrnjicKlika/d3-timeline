@@ -180,10 +180,43 @@ var timeline = (function(){
         var timelineSelection = 'g.' + day + ' rect'
         var labelSelection = 'g.' + day + ' text'
 
-        _svgContainer.selectAll(timelineSelection)
+        var groups = _svgContainer.selectAll('.groups')
             .data(data)
             .enter()
-            .append('rect')
+            .append('g')
+            .attr('id' ,function(d, i){
+                return i
+            }).on('click', function (d, i){
+                var g = d3.select(this)
+                var rectForEdit = g.select('rect')
+                
+                var options = {
+                    newRect: this,
+                    timeline: d.settings,
+                    newRectStartX: d.xStart,
+                    y: (i * 40) + 10
+                }
+
+                createTooltipHtml(options, (result) => {
+                    var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                    var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                    var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                    var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                    rectForEdit.attr('x', xStart).attr('width', xEnd - xStart)
+                    rectForEdit.attr('fill', getRectColor(result.temp))
+        
+                    var labelY = parseInt(rectForEdit.attr('y'))
+                    var textElement = g.select('text')
+
+                    textElement
+                        .attr('x', xStart + 5)
+                        .attr('y', labelY + 15)
+                        .attr('fill', 'white')
+                        .text(result.temp)
+                })
+            })
+
+        groups.append('rect')
             .attr('x', function(d){
                 return d.xStart
             })
@@ -198,37 +231,8 @@ var timeline = (function(){
                 var temp = d.settings.temp
                 return getRectColor(temp)
             })
-            .on('click', function(d, i){
-                var options = {
-                    newRect: this,
-                    timeline: d.settings,
-                    newRectStartX: d.xStart,
-                    y: (i * 40) + 10
-                }
-
-                createTooltipHtml(options, (result) => {
-                    var rectForEdit = d3.select(this)
-                    var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
-                    var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
-                    var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
-                    var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
-                    rectForEdit.attr('x', xStart).attr('width', xEnd - xStart)
-                    rectForEdit.attr('fill', getRectColor(result.temp))
-        
-                    // var labelY = parseInt(rectForEdit.attr('y'))
-
-                    // _svgContainer.append('text')
-                    //     .attr('x', xStart + 5)
-                    //     .attr('y', labelY + 15)
-                    //     .attr('fill', 'white')
-                    //     .text(result.temp)
-                })
-            })
             
-        _svgContainer.selectAll(labelSelection)
-            .data(data)
-            .enter()
-            .append('text')
+        groups.append('text')
             .attr('x', function(d){
                 var percentageStart = timePassedPercente(d.settings.hourStart, d.settings.minuteStart, 0)
                 var x = xAxis(percentageStart, _clientWidth - 100) + 100
