@@ -176,9 +176,6 @@ var timeline = (function(){
 
     function drawTimeframes(day, i){
         var data = filterDataForDay(_dataset, day)
-        
-        var timelineSelection = 'g.' + day + ' rect'
-        var labelSelection = 'g.' + day + ' text'
 
         var groups = _svgContainer.selectAll('.groups')
             .data(data)
@@ -188,31 +185,31 @@ var timeline = (function(){
                 return i
             }).on('click', function (d, i){
                 var g = d3.select(this)
-                var rectForEdit = g.select('rect')
                 
-                var options = {
-                    newRect: this,
+                var options = { 
                     timeline: d.settings,
                     newRectStartX: d.xStart,
                     y: (i * 40) + 10
                 }
 
                 createTooltipHtml(options, (result) => {
-                    var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
-                    var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
-                    var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
-                    var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
-                    rectForEdit.attr('x', xStart).attr('width', xEnd - xStart)
-                    rectForEdit.attr('fill', getRectColor(result.temp))
-        
-                    var labelY = parseInt(rectForEdit.attr('y'))
-                    var textElement = g.select('text')
 
-                    textElement
-                        .attr('x', xStart + 5)
-                        .attr('y', labelY + 15)
-                        .attr('fill', 'white')
-                        .text(result.temp)
+                    if(!result) return
+
+                    _dataset = _dataset.map(function(item){
+                        if(item.xStart === d.xStart && item.xEnd === d.xEnd){
+                            var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                            var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                            var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                            var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                            return{ ...d, settings: result, xStart, xEnd }
+                        }else{
+                            return item
+                        }
+                    })
+
+                    g.remove()
+                    drawTimeframes(day, i)
                 })
             })
 
@@ -272,7 +269,7 @@ var timeline = (function(){
 
     function createTooltipHtml(options, onFinish){
 
-        var { newRect, timeline, newRectStartX, y } = options
+        var { timeline, newRectStartX, y } = options
 
         var startHour = timeline.hourStart
         var startMinute = timeline.minuteStart
