@@ -79,7 +79,7 @@ var timeline = (function(){
         var newRect
         var newRectStartX
 
-        for(var i = 0; i < days.length; i++){
+        for(let i = 0; i < days.length; i++){
 
             fillColor = i % 2 === 0 ? '#ffffff' : '#dce0e8'
 
@@ -139,25 +139,28 @@ var timeline = (function(){
                                 newRectStartX,
                                 y
                             }
-
-                            createTooltipHtml(options, (result) => {
+                            
+                            createTooltipHtml(options, function (result){
                                 var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
                                 var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
                                 var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
                                 var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
-                                newRect.attr('x', xStart).attr('width', xEnd - xStart)
-                                newRect.attr('fill', getRectColor(result.temp))
 
-                                var labelY = parseInt(newRect.attr('y'))
-                                _svgContainer.append('text')
-                                    .attr('x', xStart + 5)
-                                    .attr('y', labelY + 15)
-                                    .attr('fill', 'white')
-                                    .text(result.temp)
+                                var newItem = {
+                                    day: days[dayIndex],
+                                    type: 'dhw',
+                                    settings: result,
+                                    xStart,
+                                    xEnd
+                                }
+
+                                _dataset = [..._dataset, newItem]
+                                newRect.remove()
+                                newRect = null
+                                drawTimeframes(days[dayIndex], dayIndex)
                             })
                         }             
-                    })
-                    
+                    }) 
                 )
 
             _svgContainer.append('text')
@@ -176,20 +179,19 @@ var timeline = (function(){
 
     function drawTimeframes(day, i){
         var data = filterDataForDay(_dataset, day)
-
         var groups = _svgContainer.selectAll('.groups')
             .data(data)
             .enter()
             .append('g')
             .attr('id' ,function(d, i){
                 return i
-            }).on('click', function (d, i){
+            }).on('click', function (d){
                 var g = d3.select(this)
-                
+                var tooltipY = parseInt(g.select('rect').attr('y'))
                 var options = { 
                     timeline: d.settings,
                     newRectStartX: d.xStart,
-                    y: (i * 40) + 10
+                    y: tooltipY
                 }
 
                 createTooltipHtml(options, (result) => {
