@@ -5,6 +5,7 @@ var timeline = (function(){
     var _clientWidth = 0
     var _secondsInADay = 24 * 60 * 60
     var dragOn = true
+    var inputTooltipVisible = false
     /*
         Calculates percentage of day based on time params    
     */
@@ -140,8 +141,10 @@ var timeline = (function(){
                                 y
                             }
                             
+                            inputTooltipVisible = true
                             createTooltipHtml(options, function (result){
 
+                                inputTooltipVisible = false
                                 if(!result){
                                     newRect.remove()
                                     newRect = null
@@ -195,6 +198,12 @@ var timeline = (function(){
             .attr('id' ,function(d, i){
                 return i
             }).on('click', function (d){
+
+                if(inputTooltipVisible){
+                    return
+                }
+
+                inputTooltipVisible = true
                 var g = d3.select(this)
                 var tooltipY = parseInt(g.select('rect').attr('y'))
                 var options = { 
@@ -205,6 +214,7 @@ var timeline = (function(){
 
                 createTooltipHtml(options, (result) => {
 
+                    inputTooltipVisible = false
                     if(!result) return
 
                     _dataset = _dataset.map(function(item){
