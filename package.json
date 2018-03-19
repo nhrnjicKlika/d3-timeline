@@ -19,5 +19,8 @@
   "homepage": "https://github.com/nhrnjicKlika/d3-timeline#readme",
   "dependencies": {
     "express": "^4.16.3"
+  },
+  "engines": {
+    "node": "8.9.4"
   }
 }
