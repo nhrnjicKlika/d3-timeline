@@ -138,7 +138,8 @@ var timeline = (function(){
                                 newRect,
                                 timeline: timeframe,
                                 newRectStartX,
-                                y
+                                y,
+                                isEdit: false
                             }
                             
                             inputTooltipVisible = true
@@ -209,7 +210,8 @@ var timeline = (function(){
                 var options = { 
                     timeline: d.settings,
                     newRectStartX: d.xStart,
-                    y: tooltipY
+                    y: tooltipY,
+                    isEdit: true
                 }
 
                 createTooltipHtml(options, (result) => {
@@ -290,7 +292,7 @@ var timeline = (function(){
 
     function createTooltipHtml(options, onFinish){
 
-        var { timeline, newRectStartX, y } = options
+        var { timeline, newRectStartX, y, isEdit } = options
 
         var startHour = timeline.hourStart
         var startMinute = timeline.minuteStart
@@ -315,6 +317,9 @@ var timeline = (function(){
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
         htmlContent += '<span class = "temp_id"> Temperature </span> <input id = "temp_input_id" value = "'+ create2DigitNumber(temp) +'" />'
         htmlContent += '<div class = "actions-wrapper">'
+        if(isEdit){
+            htmlContent += '<button id = "delete_btn_id"> Delete </button>'
+        }
         htmlContent += '<button id = "cancel_btn_id"> Cancel </button> <button id = "save_btn_id"> Save </button>'
         htmlContent += '</div>'
         
