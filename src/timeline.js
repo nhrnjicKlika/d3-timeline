@@ -138,13 +138,15 @@ var timeline = (function(){
                                 newRect,
                                 timeline: timeframe,
                                 newRectStartX,
-                                y
+                                y,
+                                isEdit: false
                             }
                             
                             inputTooltipVisible = true
                             createTooltipHtml(options, function (result){
 
                                 inputTooltipVisible = false
+                                dragOn = true
                                 if(!result){
                                     newRect.remove()
                                     newRect = null
@@ -209,25 +211,35 @@ var timeline = (function(){
                 var options = { 
                     timeline: d.settings,
                     newRectStartX: d.xStart,
-                    y: tooltipY
+                    y: tooltipY,
+                    isEdit: true
                 }
 
                 createTooltipHtml(options, (result) => {
 
                     inputTooltipVisible = false
-                    if(!result) return
+                    dragOn = true
+                    if(!result){
+                        return // cancel clicked
+                    }
 
-                    _dataset = _dataset.map(function(item){
-                        if(item.xStart === d.xStart && item.xEnd === d.xEnd){
-                            var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
-                            var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
-                            var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
-                            var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
-                            return{ ...d, settings: result, xStart, xEnd }
-                        }else{
-                            return item
-                        }
-                    })
+                    if(result.shouldDelete){
+                        _dataset = _dataset.filter(function(item){
+                            return item.xStart !== d.xStart && item.xEnd !== d.xEnd
+                        })
+                    }else{
+                        _dataset = _dataset.map(function(item){
+                            if(item.xStart === d.xStart && item.xEnd === d.xEnd){
+                                var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                                var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                                var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                                var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                                return{ ...d, settings: result, xStart, xEnd }
+                            }else{
+                                return item
+                            }
+                        })
+                    }   
 
                     g.remove()
                     drawTimeframes(day, i)
@@ -290,7 +302,7 @@ var timeline = (function(){
 
     function createTooltipHtml(options, onFinish){
 
-        var { timeline, newRectStartX, y } = options
+        var { timeline, newRectStartX, y, isEdit } = options
 
         var startHour = timeline.hourStart
         var startMinute = timeline.minuteStart
@@ -315,6 +327,9 @@ var timeline = (function(){
         htmlContent += '<img id = "end_up_id" src = "src/logo/plus.png" /> <img id = "end_down_id" src = "src/logo/minus.png" />'
         htmlContent += '<span class = "temp_id"> Temperature </span> <input id = "temp_input_id" value = "'+ create2DigitNumber(temp) +'" />'
         htmlContent += '<div class = "actions-wrapper">'
+        if(isEdit){
+            htmlContent += '<button id = "delete_btn_id"> Delete </button>'
+        }
         htmlContent += '<button id = "cancel_btn_id"> Cancel </button> <button id = "save_btn_id"> Save </button>'
         htmlContent += '</div>'
         
@@ -331,17 +346,27 @@ var timeline = (function(){
         var endUp = document.getElementById('end_up_id')
         var endDown = document.getElementById('end_down_id')
 
+        var deleteBtn = document.getElementById('delete_btn_id')
         var cancelBtn = document.getElementById('cancel_btn_id')
         var saveBtn = document.getElementById('save_btn_id')
 
+        if(isEdit){
+            deleteBtn.onclick = function(){
+                tooltip.remove()
+                var result = {
+                    shouldDelete: true
+                }
+
+                onFinish(result)
+            }
+        }
+
         cancelBtn.onclick = function(){
-            dragOn = true
             tooltip.remove()
             onFinish(null)
         }
 
         saveBtn.onclick = function(){
-            dragOn = true
             var result = {
                 day: timeline.day,
                 hourStart: startHour,
