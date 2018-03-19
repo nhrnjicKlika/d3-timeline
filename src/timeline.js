@@ -217,19 +217,27 @@ var timeline = (function(){
                 createTooltipHtml(options, (result) => {
 
                     inputTooltipVisible = false
-                    if(!result) return
+                    if(!result){
+                        return // cancel clicked
+                    }
 
-                    _dataset = _dataset.map(function(item){
-                        if(item.xStart === d.xStart && item.xEnd === d.xEnd){
-                            var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
-                            var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
-                            var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
-                            var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
-                            return{ ...d, settings: result, xStart, xEnd }
-                        }else{
-                            return item
-                        }
-                    })
+                    if(result.shouldDelete){
+                        _dataset = _dataset.filter(function(item){
+                            return item.xStart !== d.xStart && item.xEnd !== d.xEnd
+                        })
+                    }else{
+                        _dataset = _dataset.map(function(item){
+                            if(item.xStart === d.xStart && item.xEnd === d.xEnd){
+                                var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
+                                var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
+                                var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
+                                var xEnd = xAxis(percentageEnd, _clientWidth - 100) + 100
+                                return{ ...d, settings: result, xStart, xEnd }
+                            }else{
+                                return item
+                            }
+                        })
+                    }   
 
                     g.remove()
                     drawTimeframes(day, i)
@@ -336,17 +344,26 @@ var timeline = (function(){
         var endUp = document.getElementById('end_up_id')
         var endDown = document.getElementById('end_down_id')
 
+        var deleteBtn = document.getElementById('delete_btn_id')
         var cancelBtn = document.getElementById('cancel_btn_id')
         var saveBtn = document.getElementById('save_btn_id')
 
+        if(isEdit){
+            deleteBtn.onclick = function(){
+                var result = {
+                    shouldDelete: true
+                }
+
+                onFinish(result)
+            }
+        }
+
         cancelBtn.onclick = function(){
-            dragOn = true
             tooltip.remove()
             onFinish(null)
         }
 
         saveBtn.onclick = function(){
-            dragOn = true
             var result = {
                 day: timeline.day,
                 hourStart: startHour,
