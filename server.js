@@ -5,6 +5,6 @@ app.use(express.static(__dirname + '/'))
 
 var port = process.env.port || 5000
 
-app.listen(5000, function(){
+app.listen(port, function(){
     console.log('listening at 5000')
 })
