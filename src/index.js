@@ -1,9 +1,9 @@
 var dataset = [ 
-    {
-        day: 'Monday',
-        type: 'dhw',
-        settings:  { hourStart: 13, minuteStart: 30, hourEnd: 17, minuteEnd: 0, temp: 45 }
-    }
+    // {
+    //     day: 'Monday',
+    //     type: 'dhw',
+    //     settings:  { hourStart: 13, minuteStart: 30, hourEnd: 17, minuteEnd: 0, temp: 45 }
+    // }
 ]
 
 var typeSelect = document.getElementById('type')
