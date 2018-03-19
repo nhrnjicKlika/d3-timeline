@@ -141,6 +141,15 @@ var timeline = (function(){
                             }
                             
                             createTooltipHtml(options, function (result){
+
+                                if(!result){
+                                    newRect.remove()
+                                    newRect = null
+                                    newRectStartX = 0
+                                    dragOn = true
+                                    return
+                                }
+
                                 var percentageStart = timePassedPercente(result.hourStart, result.minuteStart, 0)
                                 var xStart = xAxis(percentageStart, _clientWidth - 100) + 100
                                 var percentageEnd = timePassedPercente(result.hourEnd, result.minuteEnd, 0)
