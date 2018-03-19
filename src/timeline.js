@@ -146,6 +146,7 @@ var timeline = (function(){
                             createTooltipHtml(options, function (result){
 
                                 inputTooltipVisible = false
+                                dragOn = true
                                 if(!result){
                                     newRect.remove()
                                     newRect = null
@@ -217,6 +218,7 @@ var timeline = (function(){
                 createTooltipHtml(options, (result) => {
 
                     inputTooltipVisible = false
+                    dragOn = true
                     if(!result){
                         return // cancel clicked
                     }
@@ -350,6 +352,7 @@ var timeline = (function(){
 
         if(isEdit){
             deleteBtn.onclick = function(){
+                tooltip.remove()
                 var result = {
                     shouldDelete: true
                 }
