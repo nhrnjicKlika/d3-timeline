@@ -93,7 +93,7 @@ var timeline = (function(){
                 .attr('fill', fillColor)
                 .call(d3.drag()
                     .on("start", function(){
-                        if(dragOn){ 
+                        if(dragOn && !inputTooltipVisible){ 
                             var y = parseInt(this.getAttribute('y'))
                             var mouseClickX = d3.event.x
                             newRectStartX = mouseClickX
@@ -106,7 +106,7 @@ var timeline = (function(){
                         }
                     })
                     .on("drag", function(){
-                        if(dragOn){ 
+                        if(dragOn && !inputTooltipVisible){ 
                             if(newRect){
                                 var mouseClickX = d3.event.x
                                 var rectX = mouseClickX - newRectStartX
@@ -115,7 +115,7 @@ var timeline = (function(){
                         }
                     })
                     .on("end", function(){
-                        if(dragOn){ 
+                        if(dragOn && !inputTooltipVisible){ 
                             dragOn = false
                             var mouseX = d3.event.x
                             var y = parseInt(this.getAttribute('y'))
